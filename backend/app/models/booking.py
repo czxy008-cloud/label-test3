@@ -19,6 +19,9 @@ class Booking(Base):
     cancelled_at = Column(DateTime)
     cancelled_by = Column(Integer, ForeignKey("users.id"))
     cancel_reason = Column(Text)
+    is_checked_in = Column(Boolean, default=False)
+    checked_in_at = Column(DateTime)
+    auto_cancelled = Column(Boolean, default=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
     room = relationship("Room", back_populates="bookings")

@@ -49,6 +49,10 @@
             <el-icon><Setting /></el-icon>
             <span>会议室管理</span>
           </el-menu-item>
+          <el-menu-item v-if="userStore.isAdmin" index="/admin/dashboard">
+            <el-icon><DataAnalysis /></el-icon>
+            <span>数据看板</span>
+          </el-menu-item>
         </el-menu>
       </el-aside>
 
@@ -67,7 +71,7 @@
 import { computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessageBox } from 'element-plus'
-import { OfficeBuilding, UserFilled, ArrowDown, SwitchButton, Calendar, List, Setting } from '@element-plus/icons-vue'
+import { OfficeBuilding, UserFilled, ArrowDown, SwitchButton, Calendar, List, Setting, DataAnalysis } from '@element-plus/icons-vue'
 import { useUserStore } from '@/stores/user'
 
 const route = useRoute()

@@ -34,6 +34,12 @@ const routes = [
         name: 'AdminRooms',
         component: () => import('@/views/admin/Rooms.vue'),
         meta: { title: '会议室管理', requiresAdmin: true }
+      },
+      {
+        path: 'admin/dashboard',
+        name: 'AdminDashboard',
+        component: () => import('@/views/admin/Dashboard.vue'),
+        meta: { title: '数据看板', requiresAdmin: true }
       }
     ]
   }

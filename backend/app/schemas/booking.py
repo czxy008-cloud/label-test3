@@ -34,6 +34,10 @@ class BookingCancel(BaseModel):
     reason: Optional[str] = None
 
 
+class BookingCheckIn(BaseModel):
+    pass
+
+
 class BookingResponse(BookingBase):
     id: int
     user_id: int
@@ -41,6 +45,9 @@ class BookingResponse(BookingBase):
     cancelled_at: Optional[datetime] = None
     cancelled_by: Optional[int] = None
     cancel_reason: Optional[str] = None
+    is_checked_in: bool
+    checked_in_at: Optional[datetime] = None
+    auto_cancelled: bool
     created_at: datetime
 
     class Config:

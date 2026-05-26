@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 
 from app.database import get_db
 from app.models import Booking, Room, User
-from app.schemas import BookingCreate, BookingUpdate, BookingResponse, BookingCancel
+from app.schemas import BookingCreate, BookingUpdate, BookingResponse, BookingCancel, BookingCheckIn
 from app.auth import get_current_active_user, get_current_admin_user
 
 router = APIRouter(prefix="/bookings", tags=["bookings"])
@@ -205,3 +205,47 @@ def check_booking_conflict(
 ):
     has_conflict = check_conflict(db, room_id, start_time, end_time, exclude_booking_id)
     return {"has_conflict": has_conflict}
+
+
+@router.post("/{booking_id}/checkin", response_model=BookingResponse)
+def checkin_booking(
+    booking_id: int,
+    checkin_data: BookingCheckIn,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    booking = db.query(Booking).filter(Booking.id == booking_id).first()
+    if not booking:
+        raise HTTPException(status_code=404, detail="Booking not found")
+
+    if booking.is_cancelled:
+        raise HTTPException(status_code=400, detail="Cannot check in to a cancelled booking")
+
+    if booking.user_id != current_user.id and not current_user.is_admin:
+        raise HTTPException(status_code=403, detail="You can only check in to your own bookings")
+
+    if booking.is_checked_in:
+        raise HTTPException(status_code=400, detail="Booking is already checked in")
+
+    now = datetime.utcnow()
+    checkin_window_start = booking.start_time - timedelta(minutes=30)
+    checkin_window_end = booking.start_time + timedelta(minutes=15)
+
+    if now < checkin_window_start:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Check-in is only available 30 minutes before the booking starts"
+        )
+
+    if now > checkin_window_end:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Check-in is only available within 15 minutes after the booking starts"
+        )
+
+    booking.is_checked_in = True
+    booking.checked_in_at = now
+
+    db.commit()
+    db.refresh(booking)
+    return booking

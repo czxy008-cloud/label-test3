@@ -19,3 +19,9 @@ export const bookingApi = {
   deleteBooking: (id) => request.delete(`/bookings/${id}`),
   checkConflict: (params) => request.get('/bookings/conflict/check', { params })
 }
+
+export const statsApi = {
+  getUtilization: (params) => request.get('/stats/utilization', { params }),
+  getHourly: (params) => request.get('/stats/hourly', { params }),
+  getDaily: (params) => request.get('/stats/daily', { params })
+}

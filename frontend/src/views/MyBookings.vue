@@ -44,7 +44,7 @@
               v-if="!row.is_cancelled"
               size="small"
               type="danger"
-              @click="cancelBooking(row)
+              @click="cancelBooking(row)"
             >
               取消
             </el-button>
